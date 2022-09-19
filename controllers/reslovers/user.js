@@ -126,7 +126,35 @@ console.log('object :>> ', res);
         throw error
       }
     },
-   
+    resetPassword :async (parent, args, ctx) => {
+      try {
+        let userPass = await models.users.findOne({
+          where: {
+            email: args.input.email,
+          },
+        });
+        if (!userPass) {
+          throw "invalid email";
+        }
+    
+        let reset = {
+          passwordReset: true,
+          id: userPass.id,
+        };
+        let secret = token();
+        let resetKey = jwt.sign(reset, secret, {
+          expiresIn: 86400, // expires in 24 hours
+        });
+    
+        res.json({
+          status: constants.success_code,
+          message: "password resetKey",
+          resetKey: resetKey,
+        });
+      } catch (error) {
+        throw 'error'
+      }
+    },
     updatePassword: async (parent, args, ctx) => {
     try {
         let secret = token();
@@ -150,15 +178,15 @@ console.log('object :>> ', res);
               id: tokenData.id,
             },
           });
-          return res.json({
+          return {
             status: 200,
             message: "change successfully",
-          });
+          };
         } else {
-          return res.json({
+          return {
             status: "error",
             message: "unauthorized",
-          });
+          };
         }
       }catch (error) {
         throw error

@@ -39,7 +39,7 @@ input changePassword{
   
   }
   type updatePassword{
-    email:String
+    resetKey:String
     password:String
   }
 
@@ -47,13 +47,19 @@ input changePassword{
     token:String!
   }
 
-  
+  input resetPassword{
+    email:String
+    
+  }
   type ResponseUser{
     status:Int
     message:String
     data:User
   }
-
+  type ResponseResetPassword{
+    status:Int
+    resetkey: String
+  }
   type Query {
     listUsers: ResponseUser!
   }
@@ -61,8 +67,9 @@ input changePassword{
   type Mutation {
     registerUser(input:InputRegisterUser): ResponseUser!
     login(input: LoginInput!): LoginResponse 
-    updatePassword(input:UpdatePassword!):ResponseUser @isAuthorized
+    updatePassword(input:UpdatePassword!):ResponseUser 
     changePassword(input:changePassword):ResponseUser! @isAuthorized
+    resetPassword(input:resetPassword):ResponseResetPassword
   }
 `;
 
